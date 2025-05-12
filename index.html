@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <title>VigNation.Blog</title>
+    <style>
+        /* Apply Lato font globally */
+        body, p, input, button, a, label, span, div {
+            font-family: 'Lato', sans-serif;
+        }
+
+        /* Apply Playfair Display to headings */
+        h1, h2, h3, .post-title {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* --- Background Image Styles --- */
+        body {
+            /* background-image: url('YOUR_IMAGE_URL_HERE.jpg'); */
+            background-color: #f0e6d2; /* Fallback */
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(251, 219, 147, 0.3);
+            z-index: -1;
+        }
+
+        /* --- Background Blobs --- */
+        .background-blob-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -2;
+        }
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: drift 20s infinite alternate ease-in-out;
+        }
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            background-color: var(--color-secondary);
+            top: -100px;
+            left: -150px;
+            animation-duration: 22s;
+        }
+        .blob-2 {
+            width: 500px;
+            height: 500px;
+            background-color: var(--color-tertiary);
+            bottom: -150px;
+            right: -200px;
+            opacity: 0.4;
+            animation-duration: 25s;
+            animation-delay: -5s;
+        }
+        .blob-3 {
+            width: 350px;
+            height: 350px;
+            background-color: var(--color-accent);
+            top: 50%;
+            left: 40%;
+            transform: translate(-50%, -50%);
+            opacity: 0.3;
+            filter: blur(100px);
+            animation-duration: 18s;
+            animation-delay: -10s;
+        }
+        /* Responsive adjustments for blobs */
+        @media (max-width: 768px) {
+            .blob-1 { width: 250px; height: 250px; left: -100px; top: -50px; opacity: 0.4;}
+            .blob-2 { width: 300px; height: 300px; right: -100px; bottom: -100px; opacity: 0.3;}
+            .blob-3 { width: 200px; height: 200px; opacity: 0.2; filter: blur(60px);}
+        }
+
+
+        @keyframes drift {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, 50px) scale(1.1); }
+            100% { transform: translate(-20px, -40px) scale(0.9); }
+        }
+
+        header, main, footer {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- Custom Color Palette Classes --- */
+        :root {
+            --color-dominant: #FBDB93;
+            --color-secondary: #BE5B50;
+            --color-tertiary: #8A2D3B;
+            --color-accent: #641B2E;
+            --color-secondary-dark: #a04d43;
+            --color-tertiary-dark: #6c232f;
+
+            --color-dominant-rgba-85: rgba(251, 219, 147, 0.85);
+            --color-dominant-rgba-90: rgba(251, 219, 147, 0.90);
+            --color-dominant-rgba-95: rgba(251, 219, 147, 0.95);
+            --color-dominant-rgba-70: rgba(251, 219, 147, 0.70);
+            --color-dominant-rgba-40: rgba(251, 219, 147, 0.40);
+            --color-dominant-rgba-50: rgba(251, 219, 147, 0.50);
+            --color-accent-rgba-85: rgba(100, 27, 46, 0.85);
+            --color-secondary-rgba-30: rgba(190, 91, 80, 0.3);
+        }
+        /* Backgrounds */
+        .bg-dominant-85 { background-color: var(--color-dominant-rgba-85); }
+        .bg-dominant-90 { background-color: var(--color-dominant-rgba-90); }
+        .bg-dominant-95 { background-color: var(--color-dominant-rgba-95); }
+        .bg-dominant-70 { background-color: var(--color-dominant-rgba-70); }
+        .bg-dominant-40 { background-color: var(--color-dominant-rgba-40); }
+        .bg-accent-85 { background-color: var(--color-accent-rgba-85); }
+        /* Text */
+        .text-dominant { color: var(--color-dominant); }
+        .text-secondary { color: var(--color-secondary); }
+        .text-tertiary { color: var(--color-tertiary); }
+        .text-accent { color: var(--color-accent); }
+        /* Borders */
+        .border-dominant-50 { border-color: var(--color-dominant-rgba-50); }
+        .border-secondary { border-color: var(--color-secondary); }
+        /* Hovers */
+        .hover\:bg-secondary-dark:hover { background-color: var(--color-secondary-dark); }
+        .hover\:text-secondary:hover { color: var(--color-secondary); }
+        .hover\:text-tertiary:hover { color: var(--color-tertiary); }
+        .hover\:bg-dominant-95:hover { background-color: var(--color-dominant-rgba-95); }
+        .hover\:filter-item:hover { background-color: var(--color-secondary-rgba-30); cursor: pointer; }
+        /* Focus Rings */
+        .focus\:ring-tertiary:focus {
+            --tw-ring-opacity: 1;
+            --tw-ring-color: var(--color-tertiary);
+             box-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+        }
+         /* Active pagination style */
+        .pagination-active {
+            background-color: var(--color-tertiary) !important;
+            color: white !important;
+            border-color: var(--color-tertiary) !important;
+            cursor: default;
+        }
+        /* Non-active pagination text */
+        .pagination-inactive {
+             color: var(--color-accent);
+             border-color: var(--color-secondary);
+             cursor: pointer;
+        }
+        .pagination-inactive:hover {
+             background-color: var(--color-dominant);
+             border-color: var(--color-tertiary);
+             color: var(--color-tertiary);
+        }
+         /* Disabled pagination button style */
+        .pagination-disabled {
+            color: #9ca3af;
+            border-color: #d1d5db;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .pagination-disabled:hover {
+             background-color: transparent;
+             color: #9ca3af;
+             border-color: #d1d5db;
+        }
+
+        .dropdown-menu {
+            transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        .blog-post.animate-fadeInStaggered {
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        .header-nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0; /* Add some padding for better touch targets in mobile menu */
+        }
+        .header-nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--color-secondary);
+            transition: width 0.3s ease;
+        }
+        .header-nav-link:hover::after,
+        .header-nav-link.active-link::after {
+            width: 100%;
+        }
+        .header-nav-link.active-link {
+            color: var(--color-secondary);
+        }
+        .blog-post {
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+        }
+        .blog-post:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .blog-post-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        /* Mobile Menu Styles */
+        .mobile-menu {
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="text-gray-900">
+    <div class="background-blob-container">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <header class="bg-dominant-85 backdrop-blur-sm shadow-md sticky top-0 z-20"> <nav class="container mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="hover:opacity-80 transition-opacity duration-200">
+                 <h1 class="text-2xl font-bold text-tertiary animate-fadeIn" style="animation-delay: 0.1s;">VigNation.Blog</h1>
+            </a>
+            <div class="hidden md:flex space-x-6">
+                <a href="index.html" id="navHomeDesktop" class="header-nav-link text-accent hover:text-secondary font-medium active-link animate-fadeIn" style="animation-delay: 0.2s;">Home</a>
+                <a href="about.html" id="navAboutDesktop" class="header-nav-link text-accent hover:text-secondary font-medium animate-fadeIn" style="animation-delay: 0.3s;">About</a>
+                <a href="subscribe.html" id="navSubscribeDesktop" class="header-nav-link text-accent hover:text-secondary font-medium animate-fadeIn" style="animation-delay: 0.4s;">Subscribe</a>
+            </div>
+            <div class="md:hidden">
+                <button id="mobileMenuButton" class="text-accent focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+        <div id="mobileMenu" class="mobile-menu md:hidden bg-dominant-95 backdrop-blur-md shadow-lg absolute top-full left-0 right-0 transform -translate-y-full opacity-0 -z-10">
+            <a href="index.html" class="block header-nav-link text-accent hover:text-secondary px-4 py-3 border-b border-dominant-50 active-link">Home</a>
+            <a href="about.html" class="block header-nav-link text-accent hover:text-secondary px-4 py-3 border-b border-dominant-50">About</a>
+            <a href="subscribe.html" class="block header-nav-link text-accent hover:text-secondary px-4 py-3">Subscribe</a>
+        </div>
+    </header>
+
+    <div class="bg-dominant-85 backdrop-blur-sm shadow-lg py-6 animate-fadeIn" style="animation-delay: 0.5s;">
+        <div class="container mx-auto px-4 sm:px-6"> <p class="text-accent leading-relaxed mb-6 font-medium text-sm sm:text-base"> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2"> <input type="text" id="searchInput" placeholder="Search blog posts..." class="w-full sm:flex-grow px-4 py-2 border border-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-tertiary bg-dominant-70 text-accent placeholder-gray-600">
+                <button id="searchButton" class="w-full sm:w-auto bg-secondary hover:bg-secondary-dark text-white font-bold py-2 px-6 rounded-lg transition duration-300 ease-in-out whitespace-nowrap shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tertiary">
+                    Search blog
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <main class="py-8 bg-dominant-85 backdrop-blur-sm shadow-lg">
+        <div class="container mx-auto px-4 sm:px-6"> <div id="blogPostsSection">
+                 <div class="relative inline-block text-left mb-4 animate-fadeIn" style="animation-delay: 0.6s;">
+                     <div>
+                          <button type="button" id="filterButton" class="bg-dominant-90 inline-flex justify-center w-full rounded-md border border-secondary shadow-sm px-4 py-2 backdrop-blur-sm text-sm font-medium text-accent hover:bg-dominant-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-tertiary" aria-expanded="false" aria-haspopup="true">
+                             <span id="filterButtonText">Filter Posts</span>
+                             <svg class="-mr-1 ml-2 h-5 w-5 text-accent transition-transform duration-300" id="filterArrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                             </svg>
+                         </button>
+                     </div>
+                     <div id="filterDropdown" class="bg-dominant-95 dropdown-menu origin-top-right absolute left-0 mt-2 w-56 rounded-md shadow-lg backdrop-blur-sm ring-1 ring-black ring-opacity-5 focus:outline-none hidden transform opacity-0 scale-95 z-20" role="menu" aria-orientation="vertical" aria-labelledby="filterButton" tabindex="-1">
+                         <div class="py-1" role="none">
+                             <a href="#" class="text-accent block px-4 py-2 text-sm hover:filter-item" role="menuitem" tabindex="-1" data-sort="name-asc">Name (A-Z)</a>
+                             <a href="#" class="text-accent block px-4 py-2 text-sm hover:filter-item" role="menuitem" tabindex="-1" data-sort="date-desc">Time Published (Newest)</a>
+                             <a href="#" class="text-accent block px-4 py-2 text-sm hover:filter-item" role="menuitem" tabindex="-1" data-sort="date-asc">Time Published (Oldest)</a>
+                             <a href="#" class="text-accent block px-4 py-2 text-sm filter-item text-gray-400 cursor-not-allowed" role="menuitem" tabindex="-1" data-sort="most-read">Most Read (N/A)</a>
+                             <a href="#" class="text-accent block px-4 py-2 text-sm filter-item text-gray-400 cursor-not-allowed" role="menuitem" tabindex="-1" data-sort="author">By Author (N/A)</a>
+                         </div>
+                     </div>
+                 </div>
+
+                 <div id="blogPostGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 min-h-[200px]"> </div>
+                 <div id="noResultsMessage" class="text-center text-accent font-semibold mt-8 hidden animate-fadeIn">
+                     No blog posts found matching your criteria.
+                 </div>
+
+                 <nav id="paginationContainer" class="flex flex-wrap justify-center items-center space-x-1 sm:space-x-2 mt-8 bg-dominant-90 backdrop-blur-sm p-2 rounded-lg shadow-md animate-fadeIn" style="animation-delay: 0.7s;"> </nav>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-accent-85 backdrop-blur-sm text-dominant mt-12 py-6 animate-fadeIn" style="animation-delay: 0.8s;">
+        <div class="container mx-auto px-4 sm:px-6 text-center"> <p class="text-sm sm:text-base">&copy; 2025 VigNation.Blog. All rights reserved.</p> </div>
+    </footer>
+
+    <script>
+        // --- Initial Blog Post Data ---
+        const allPostsData = [
+            { id: 1, title: "Blog Post Title One", content: "Lorem ipsum dolor sit amet...", date: "2025-05-10", imageUrl: "https://placehold.co/600x400/BE5B50/FFFFFF?text=Post+1" },
+            { id: 2, title: "Second Post Example", content: "Duis aute irure dolor in reprehenderit...", date: "2025-05-12", imageUrl: "https://placehold.co/600x400/8A2D3B/FFFFFF?text=Post+2" },
+            { id: 3, title: "Another Interesting Article", content: "Excepteur sint occaecat cupidatat...", date: "2025-05-01", imageUrl: "https://placehold.co/600x400/641B2E/FFFFFF?text=Post+3" },
+            { id: 4, title: "The Fourth Blog Entry", content: "Ut enim ad minim veniam...", date: "2025-04-28", imageUrl: "https://placehold.co/600x400/BE5B50/FFFFFF?text=Post+4" },
+            { id: 5, title: "Fifth Time's the Charm", content: "Sed ut perspiciatis unde omnis...", date: "2025-05-11", imageUrl: "https://placehold.co/600x400/8A2D3B/FFFFFF?text=Post+5" },
+            { id: 6, title: "Exploring Tailwind CSS", content: "Nemo enim ipsam voluptatem quia...", date: "2025-05-05", imageUrl: "https://placehold.co/600x400/641B2E/FFFFFF?text=Post+6" },
+            { id: 7, title: "JavaScript Basics", content: "Neque porro quisquam est...", date: "2025-05-08", imageUrl: "https://placehold.co/600x400/BE5B50/FFFFFF?text=Post+7" },
+            { id: 8, title: "Web Design Trends 2025", content: "Quis autem vel eum iure...", date: "2025-05-09", imageUrl: "https://placehold.co/600x400/8A2D3B/FFFFFF?text=Post+8" },
+        ];
+
+        // --- State Variables ---
+        let currentPosts = [...allPostsData];
+        let currentPage = 1;
+        const postsPerPage = 4;
+        let currentSort = 'date-desc';
+
+        // --- DOM Element References ---
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const blogPostGrid = document.getElementById('blogPostGrid');
+        const noResultsMessage = document.getElementById('noResultsMessage');
+        const filterButton = document.getElementById('filterButton');
+        const filterButtonText = document.getElementById('filterButtonText');
+        const filterDropdown = document.getElementById('filterDropdown');
+        const filterArrow = document.getElementById('filterArrow');
+        const paginationContainer = document.getElementById('paginationContainer');
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        let isFilterDropdownOpen = false;
+        let isMobileMenuOpen = false;
+
+
+        // --- Core Functions ---
+        function renderPosts(postsToRender) {
+            blogPostGrid.innerHTML = '';
+            if (postsToRender.length === 0) {
+                noResultsMessage.classList.remove('hidden');
+                return;
+            } else {
+                noResultsMessage.classList.add('hidden');
+            }
+            postsToRender.forEach((post, index) => {
+                const postElement = document.createElement('div');
+                postElement.className = 'blog-post bg-dominant-40 backdrop-blur-lg border border-dominant-50 rounded-lg shadow-lg flex flex-col animate-fadeInStaggered overflow-hidden';
+                postElement.style.animationDelay = `${index * 0.1}s`;
+                postElement.innerHTML = `
+                    <img src="${post.imageUrl}" alt="${post.title} preview" class="blog-post-image" onerror="this.style.display='none'">
+                    <div class="p-3 sm:p-4 flex flex-col flex-grow"> {/* Adjusted padding */}
+                        <h3 class="post-title text-lg font-semibold mb-2 text-accent">${post.title}</h3>
+                        <p class="post-content text-accent text-sm mb-3 flex-grow">${post.content}</p>
+                        <a href="#" class="read-more-link text-secondary hover:text-tertiary text-sm font-medium self-start mt-auto" data-title="${post.title}">Read More &rarr;</a>
+                    </div>
+                `;
+                blogPostGrid.appendChild(postElement);
+            });
+            addReadMoreListeners();
+        }
+
+        function renderPagination(totalPosts) {
+            paginationContainer.innerHTML = '';
+            const totalPages = Math.ceil(totalPosts / postsPerPage);
+            if (totalPages <= 1) return;
+
+            const prevButton = document.createElement('button');
+            prevButton.innerHTML = '&lt;';
+            prevButton.id = 'prevPage';
+            prevButton.className = `px-2 sm:px-3 py-1 border rounded-md ${currentPage === 1 ? 'pagination-disabled' : 'pagination-inactive'}`; // Adjusted padding
+            if (currentPage === 1) prevButton.disabled = true;
+            paginationContainer.appendChild(prevButton);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                pageButton.dataset.page = i;
+                pageButton.className = `px-2 sm:px-3 py-1 border rounded-md ${i === currentPage ? 'pagination-active' : 'pagination-inactive'}`; // Adjusted padding
+                paginationContainer.appendChild(pageButton);
+            }
+
+            const nextButton = document.createElement('button');
+            nextButton.innerHTML = '&gt;';
+            nextButton.id = 'nextPage';
+            nextButton.className = `px-2 sm:px-3 py-1 border rounded-md ${currentPage === totalPages ? 'pagination-disabled' : 'pagination-inactive'}`; // Adjusted padding
+            if (currentPage === totalPages) nextButton.disabled = true;
+            paginationContainer.appendChild(nextButton);
+
+            addPaginationListeners();
+        }
+
+        function displayPage(page, posts) {
+            currentPage = page;
+            const startIndex = (page - 1) * postsPerPage;
+            const endIndex = startIndex + postsPerPage;
+            const postsToDisplay = posts.slice(startIndex, endIndex);
+            renderPosts(postsToDisplay);
+            renderPagination(posts.length);
+        }
+
+        function sortPosts(sortType) {
+            currentSort = sortType;
+            const selectedOption = filterDropdown.querySelector(`[data-sort="${sortType}"]`);
+            filterButtonText.textContent = selectedOption ? selectedOption.textContent : 'Filter Posts';
+
+            switch (sortType) {
+                case 'name-asc':
+                    currentPosts.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                case 'date-asc':
+                    currentPosts.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    break;
+                case 'date-desc':
+                default:
+                    currentPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    break;
+            }
+            displayPage(1, currentPosts);
+        }
+
+        function filterPosts() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            currentPosts = allPostsData.filter(post => {
+                const title = post.title.toLowerCase();
+                const content = post.content.toLowerCase();
+                return title.includes(searchTerm) || content.includes(searchTerm);
+            });
+            sortPosts(currentSort);
+        }
+
+        // --- Event Listener Setup ---
+        function addReadMoreListeners() {
+            document.querySelectorAll('.read-more-link').forEach(link => {
+                link.removeEventListener('click', handleReadMoreClick);
+                link.addEventListener('click', handleReadMoreClick);
+            });
+        }
+        function handleReadMoreClick(event) {
+             event.preventDefault();
+             const title = event.target.dataset.title;
+             alert(`You clicked "Read More" on:\n"${title}"\n\n(Full post page functionality not yet implemented)`);
+        }
+
+        function addPaginationListeners() {
+            paginationContainer.querySelectorAll('button[data-page]').forEach(button => {
+                 button.removeEventListener('click', handlePageNumberClick);
+                 button.addEventListener('click', handlePageNumberClick);
+            });
+            const prevBtn = document.getElementById('prevPage');
+             if(prevBtn) {
+                  prevBtn.removeEventListener('click', handlePrevPageClick);
+                  prevBtn.addEventListener('click', handlePrevPageClick);
+             }
+            const nextBtn = document.getElementById('nextPage');
+             if(nextBtn) {
+                 nextBtn.removeEventListener('click', handleNextPageClick);
+                 nextBtn.addEventListener('click', handleNextPageClick);
+             }
+        }
+         function handlePageNumberClick(event) {
+             const page = parseInt(event.target.dataset.page, 10);
+             displayPage(page, currentPosts);
+         }
+         function handlePrevPageClick() {
+              if (currentPage > 1) {
+                  displayPage(currentPage - 1, currentPosts);
+              }
+          }
+         function handleNextPageClick() {
+              const totalPages = Math.ceil(currentPosts.length / postsPerPage);
+              if (currentPage < totalPages) {
+                  displayPage(currentPage + 1, currentPosts);
+              }
+          }
+
+        // Search Input/Button
+        searchButton.addEventListener('click', filterPosts);
+        searchInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter' || event.keyCode === 13) {
+                event.preventDefault();
+                filterPosts();
+            }
+        });
+
+        // Filter Dropdown Toggle
+        filterButton.addEventListener('click', () => {
+            if (isFilterDropdownOpen) {
+                filterDropdown.classList.remove('opacity-100', 'scale-100');
+                filterDropdown.classList.add('opacity-0', 'scale-95');
+                filterArrow.classList.remove('rotate-180');
+                setTimeout(() => { filterDropdown.classList.add('hidden'); }, 200);
+            } else {
+                filterDropdown.classList.remove('hidden');
+                filterArrow.classList.add('rotate-180');
+                setTimeout(() => {
+                    filterDropdown.classList.remove('opacity-0', 'scale-95');
+                    filterDropdown.classList.add('opacity-100', 'scale-100');
+                }, 10);
+            }
+            isFilterDropdownOpen = !isFilterDropdownOpen;
+            filterButton.setAttribute('aria-expanded', isFilterDropdownOpen);
+        });
+
+        // Filter Option Clicks
+        filterDropdown.querySelectorAll('a[data-sort]').forEach(link => {
+            const sortType = link.dataset.sort;
+            if (sortType !== 'most-read' && sortType !== 'author') {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    sortPosts(sortType);
+                    filterDropdown.classList.remove('opacity-100', 'scale-100');
+                    filterDropdown.classList.add('opacity-0', 'scale-95');
+                    filterArrow.classList.remove('rotate-180');
+                    setTimeout(() => { filterDropdown.classList.add('hidden'); }, 200);
+                    isFilterDropdownOpen = false;
+                    filterButton.setAttribute('aria-expanded', 'false');
+                });
+            }
+        });
+
+        // Close dropdown clicking outside
+        document.addEventListener('click', (event) => {
+            if (isFilterDropdownOpen && !filterButton.contains(event.target) && !filterDropdown.contains(event.target)) {
+                filterDropdown.classList.remove('opacity-100', 'scale-100');
+                filterDropdown.classList.add('opacity-0', 'scale-95');
+                filterArrow.classList.remove('rotate-180');
+                 setTimeout(() => { filterDropdown.classList.add('hidden'); }, 200);
+                isFilterDropdownOpen = false;
+                filterButton.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Mobile Menu Toggle
+        mobileMenuButton.addEventListener('click', () => {
+            isMobileMenuOpen = !isMobileMenuOpen;
+            if (isMobileMenuOpen) {
+                mobileMenu.classList.remove('-translate-y-full', 'opacity-0', '-z-10');
+                mobileMenu.classList.add('translate-y-0', 'opacity-100', 'z-10');
+            } else {
+                mobileMenu.classList.remove('translate-y-0', 'opacity-100', 'z-10');
+                mobileMenu.classList.add('-translate-y-full', 'opacity-0');
+                setTimeout(() => { // Delay hiding to allow transition
+                    mobileMenu.classList.add('-z-10');
+                }, 300);
+            }
+        });
+
+
+        // --- Initial Page Load ---
+        sortPosts(currentSort); // Initial sort and render
+
+    </script>
+</body>
+</html>
